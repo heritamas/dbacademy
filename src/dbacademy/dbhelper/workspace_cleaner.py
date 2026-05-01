@@ -229,7 +229,8 @@ class WorkspaceCleaner:
     def _drop_feature_store_tables(self, lesson_only: bool) -> bool:
         import logging
         # noinspection PyPackageRequirements
-        from databricks import feature_store
+        #from databricks import feature_store
+        from databricks.feature_engineering import FeatureEngineeringClient
 
         prefix = self.__da.schema_name if lesson_only else self.__da.schema_name_prefix
         items = self.__da.client.ml.feature_store.search_tables()
@@ -246,7 +247,7 @@ class WorkspaceCleaner:
             for table in feature_store_tables:
                 name = table.get("name")
                 print(f"| Dropping feature store table \"{name}\"")
-                feature_store.FeatureStoreClient().drop_table(name)
+                FeatureEngineeringClient.drop_table(name)
         finally:
             logger.disabled = logger_disabled
 
